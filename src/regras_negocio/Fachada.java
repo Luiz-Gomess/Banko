@@ -46,6 +46,9 @@ public class Fachada {
 			if(cr == null){
 				throw new Exception("Correntista " + cpf + "não está cadastrado.");
 			}
+			if(cr.getContaTitular() != 0){
+				throw new Exception("Correntista " + cpf + "já é titular de outra conta");
+			}
 
 			LocalDate data = LocalDate.now();
 			DateTimeFormatter formater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -54,6 +57,9 @@ public class Fachada {
 
 			cr.adicionar(c);
 			c.adicionar(cr);
+			c.setTitular(cpf);
+			cr.setContaTitular(c.getId());
+			
 
 			//adicionar Conta no reposit�rio
 			repositorio.adicionar(c);
@@ -71,6 +77,9 @@ public class Fachada {
 		if(cr == null){
 			throw new Exception("Correntista " + cpf + "não está cadastrado.");
 		}
+		if(cr.getContaTitular() != 0){
+			throw new Exception("Correntista " + cpf + "já é titular de outra conta");
+		}
 
 		if(limite < 50){
 			throw new Exception("Limite não pode ser abaixo de R$50.00");
@@ -83,6 +92,8 @@ public class Fachada {
 
 		cr.adicionar(ce);
 		ce.adicionar(cr);
+		ce.setTitular(cpf);
+		cr.setContaTitular(ce.getId());
 
 		//adicionar convidado no reposit�rio
 		repositorio.adicionar(ce);
@@ -139,12 +150,16 @@ public class Fachada {
 		//localizar Conta no repositorio, usando o nome 
 		Conta c = repositorio.localizarConta(id);
 		if(c == null) 
-			throw new Exception("remover Conta:  " + id + " inexistente");
+			throw new Exception("remover Correntista de Conta:  " + id + " inexistente");
 
 		//localizar Correntista no repositorio, usando id 
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
-			throw new Exception("remover Conta: Correntista " + cpf + " inexistente");
+			throw new Exception("remover Correntista de Conta: Correntista " + cpf + " inexistente");
+
+		if(cr.getContaTitular() == c.getId()){
+			throw new Exception("Correntista " + cpf + " é titular de " + id + ". Não pode ser removido");
+		}
 
 		//localizar o Conta no Correntista, usando o nome
 		Correntista paux = c.localizar(cpf);
@@ -164,12 +179,20 @@ public class Fachada {
 		Conta c = repositorio.localizarConta(id);
 		if (c == null)
 			throw new Exception("apagar Conta: id " + id + " inexistente");
+		
+		if(c.getSaldo() != 0){
+			throw new Exception("apagar Conta: conta " + id + " possui saldo diferente de 0.");
+		}
 
 		//Remover todos os Correntistas desta Conta
 		for(Correntista cr : c.getCorrentistas()) {
+			if(cr.getContaTitular() == id){
+				cr.setContaTitular(0);
+			}
 			cr.remover(c);
 		}
 		c.getCorrentistas().clear();
+		c.setTitular(null);
 		
 		//remover Correntista do reposit�rio
 		repositorio.remover(c);
@@ -208,6 +231,8 @@ public class Fachada {
 		if(c instanceof ContaEspecial == false){
 			if(c.getSaldo() - valor < 0){
 				throw new Exception("debitar valor: Conta " + id + "não pode ficar com saldo negativo.");
+			}else{
+				c.debitar(valor);
 			}
 		}else{
 			c.debitar(valor);

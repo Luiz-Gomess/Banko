@@ -7,6 +7,7 @@ public class Conta{
     private String data;
     private double saldo = 0;
     private ArrayList<Correntista> correntistas;
+    private String titular;
 
     public Conta(int id, String data){
         this.id = id;
@@ -34,6 +35,12 @@ public class Conta{
     }
     public ArrayList<Correntista> getCorrentistas() {
         return correntistas;
+    }
+    public String getTitular(){
+        return this.titular;
+    }
+    public void setTitular(String cpf){
+        this.titular = cpf;
     }
 
     public void creditar(double valor){

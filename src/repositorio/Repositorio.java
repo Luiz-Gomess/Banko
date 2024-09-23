@@ -98,6 +98,7 @@ public class Repositorio {
 
 		try	{
 			String cpf, nome, senha ;
+			int contaTitular;
 			File f = new File( new File(".\\correntistas.csv").getCanonicalPath() )  ;
 			Scanner arquivo1 = new Scanner(f);	 
 			while(arquivo1.hasNextLine()) 	{
@@ -107,7 +108,9 @@ public class Repositorio {
 				cpf = partes[0];
 				nome = partes[1];
 				senha = partes[2];
+				contaTitular = Integer.parseInt(partes[3]);
 				cr = new Correntista(cpf, nome, senha);
+				cr.setContaTitular(contaTitular);
 				this.adicionar(cr);
 			} 
 			arquivo1.close();
@@ -117,7 +120,7 @@ public class Repositorio {
 		}
 
 		try	{
-			String tipo, data, cpfs;
+			String tipo, data, cpfs, titular;
 			int id;
 			double saldo,limite;
 
@@ -135,6 +138,8 @@ public class Repositorio {
 				if(tipo.equals("Conta")) {
 					c = new Conta(id,data);
 					this.adicionar(c);
+					titular = partes[5];
+					c.setTitular(titular);
 					if(partes.length>4)
 						cpfs = partes[4];		//cpfs dos correntistas separados por ","
 				}
@@ -142,6 +147,8 @@ public class Repositorio {
 					limite = Double.parseDouble(partes[4]);
 					c = new ContaEspecial(id,data, limite);
 					this.adicionar(c);
+					titular = partes[6];
+					c.setTitular(titular);
 					if(partes.length>5)
 						cpfs = partes[5];		//cpfs dos correntistas separados por ","
 				}
@@ -169,8 +176,8 @@ public class Repositorio {
 		try	{
 			File f = new File( new File(".\\correntistas.csv").getCanonicalPath())  ;
 			FileWriter arquivo1 = new FileWriter(f); 
-			for(Correntista e : correntistas) 	{
-				arquivo1.write(e.getCpf()+";"+e.getNome()+";"+e.getSenha()+"\n");	
+			for(Correntista cr : correntistas) 	{
+				arquivo1.write(cr.getCpf()+";"+cr.getNome()+";"+cr.getSenha()+";"+cr.getContaTitular()+"\n");	
 			} 
 			arquivo1.close();
 		}
@@ -193,10 +200,10 @@ public class Repositorio {
 
 				if(c instanceof ContaEspecial ce )
 					arquivo2.write("ContaEspecial" + ";" +ce.getId() +";" + ce.getData() +";" 
-							+ ce.getLimite() +";"+ ce.getSaldo() +";"+ listaId +"\n");	
+							+ ce.getLimite() +";"+ ce.getSaldo() +";"+ listaId +";"+ ce.getTitular() + "\n");	
 				else
 					arquivo2.write("Conta;" +c.getId() +";" + c.getData() +";" 
-							+ c.getSaldo() +";"+ listaId +"\n");	
+							+ c.getSaldo() +";"+ listaId +";"+c.getTitular()+"\n");	
 
 			} 
 			arquivo2.close();

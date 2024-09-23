@@ -7,6 +7,7 @@ public class Correntista {
     private String nome;
     private String senha;
     private ArrayList<Conta> contas;
+    private int ContaTitular = 0;
 
     public Correntista(String cpf, String nome, String senha){
         this.cpf = cpf;
@@ -42,6 +43,12 @@ public class Correntista {
     public ArrayList<Conta> getContas() {
         return this.contas;
     }
+    public int getContaTitular(){
+        return this.ContaTitular;
+    }
+    public void setContaTitular(int id){
+        this.ContaTitular = id;
+    }
 
     public double getSaldoTotal(){
         double saldoTotal = 0;
@@ -74,6 +81,11 @@ public class Correntista {
             ids.add(c.getId());
         }
         return ids;
+    }
+
+    @Override
+    public String toString(){
+        return "CPF: " + this.cpf + "," + " nome: " + this.nome;
     }
     
 }
