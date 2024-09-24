@@ -1,9 +1,4 @@
 package appswing;
-/**********************************
- * IFPB - Curso Superior de Tec. em Sist. para Internet
- * POO
- * Prof. Fausto Maranhão Ayres
- **********************************/
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -20,10 +15,10 @@ import javax.swing.SwingConstants;
 
 public class TelaPrincipal {
 	private JFrame frame;
-	private JMenu mnParticipante;
-	private JMenu mnEvento;
+	private JMenu mnCorrentista;
+	private JMenu mnConta;
+	private JMenu mnCaixa;
 	private JLabel label;
-
 
 	/**
 	 * Launch the application.
@@ -54,7 +49,7 @@ public class TelaPrincipal {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setTitle("ALLive - Agenda de eventos");
+		frame.setTitle("Banko");
 		frame.setBounds(100, 100, 450, 363);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -72,23 +67,32 @@ public class TelaPrincipal {
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		mnParticipante = new JMenu("Participante");
-		mnParticipante.addMouseListener(new MouseAdapter() {
+		mnCorrentista = new JMenu("Correntista");
+		mnCorrentista.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				TelaParticipantes tela = new TelaParticipantes();
+				TelaCorrentista tela = new TelaCorrentista();
 			}
 		});
-		menuBar.add(mnParticipante);
+		menuBar.add(mnCorrentista);
 
-		mnEvento = new JMenu("Evento");
-		mnEvento.addMouseListener(new MouseAdapter() {
+		mnConta = new JMenu("Conta");
+		mnConta.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				TelaEventos tela = new TelaEventos();
+				TelaConta tela = new TelaConta();
 			}
 		});
-		menuBar.add(mnEvento);
+		menuBar.add(mnConta);
+
+		mnCaixa = new JMenu("Caixa");
+		mnCaixa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				TelaCaixa tela = new TelaCaixa();
+			}
+		});
+		menuBar.add(mnCaixa);
 	}
 
 }

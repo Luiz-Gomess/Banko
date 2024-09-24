@@ -1,18 +1,12 @@
-/**********************************
- * IFPB - Curso Superior de Tec. em Sist. para Internet
- * POO
- * Prof. Fausto Maranh�o Ayres
- **********************************/
 package repositorio;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import modelo.Conta;
 import modelo.ContaEspecial;
 import modelo.Correntista;
-import modelo.Conta;
 
 public class Repositorio {
 	private ArrayList<Conta> contas = new ArrayList<>();
@@ -200,7 +194,7 @@ public class Repositorio {
 
 				if(c instanceof ContaEspecial ce )
 					arquivo2.write("ContaEspecial" + ";" +ce.getId() +";" + ce.getData() +";" 
-							+ ce.getLimite() +";"+ ce.getSaldo() +";"+ listaId +";"+ ce.getTitular() + "\n");	
+							+ ce.getSaldo() +";"+ ce.getLimite() +";"+ listaId +";"+ ce.getTitular() + "\n");	
 				else
 					arquivo2.write("Conta;" +c.getId() +";" + c.getData() +";" 
 							+ c.getSaldo() +";"+ listaId +";"+c.getTitular()+"\n");	

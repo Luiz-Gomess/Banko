@@ -15,6 +15,4 @@ public class ContaEspecial extends Conta{
     public void setLimite(double limite) {
         this.limite = limite;
     }
-
-
 }
