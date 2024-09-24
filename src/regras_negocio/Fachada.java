@@ -1,17 +1,13 @@
 package regras_negocio;
-/**********************************
- * POO - Fausto Ayres
- **********************************/
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
+import modelo.Conta;
 import modelo.ContaEspecial;
 import modelo.Correntista;
-import modelo.Conta;
 import repositorio.Repositorio;
 
 public class Fachada {
@@ -36,11 +32,6 @@ public class Fachada {
 	
 	public static void criarConta(String cpf) throws Exception {
 
-		// localizar Conta no repositorio, usando o nome 
-		// Conta c = repositorio.localizarConta(id);
-		// if (c!=null)
-		// 	throw new Exception("N�o criou Conta: " + id + " ja cadastrado(a)");
-		// criar objeto Conta 
 			Correntista cr = repositorio.localizarCorrentista(cpf);
 
 			if(cr == null){
@@ -69,10 +60,6 @@ public class Fachada {
 
 	public static void criarContaEspecial(String cpf,  double limite) throws Exception {
 		
-		//localizar Conta no repositorio, usando o nome 
-		// Conta p = repositorio.localizarConta(nome);
-		// if (p!=null)
-		// 	throw new Exception("criar convidado: " + nome + " ja cadastrado(a)");
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null){
 			throw new Exception("Correntista " + cpf + "não está cadastrado.");
@@ -95,7 +82,6 @@ public class Fachada {
 		ce.setTitular(cpf);
 		cr.setContaTitular(ce.getId());
 
-		//adicionar convidado no reposit�rio
 		repositorio.adicionar(ce);
 		//gravar reposit�rio
 		repositorio.salvarObjetos();
@@ -211,11 +197,12 @@ public class Fachada {
 		
 		Conta c = cr.localizar(id);
 		if(c == null)
-			throw new Exception("creditar valor: Conta " + id + "não associada a Correntista " + cpf);
+			throw new Exception("creditar valor: Conta " + id + " não associada a Correntista " + cpf);
 		
 		c.creditar(valor);
-
+		repositorio.salvarObjetos();
 	}
+
 	public static void debitarValor(int id, String cpf, String senha, double valor) throws Exception{
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
@@ -226,18 +213,20 @@ public class Fachada {
 		
 		Conta c = cr.localizar(id);
 		if(c == null)
-			throw new Exception("debitar valor: Conta " + id + "não associada a Correntista " + cpf);
+			throw new Exception("debitar valor: Conta " + id + " não associada a Correntista " + cpf);
 
 		if(c instanceof ContaEspecial == false){
 			if(c.getSaldo() - valor < 0){
-				throw new Exception("debitar valor: Conta " + id + "não pode ficar com saldo negativo.");
+				throw new Exception("debitar valor: Conta " + id + " não pode ficar com saldo negativo.");
 			}else{
 				c.debitar(valor);
 			}
 		}else{
 			c.debitar(valor);
 		}
+		repositorio.salvarObjetos();
 	}
+
 	public static void tranferirValor(int id1, String cpf, String senha, double valor, int id2) throws Exception{
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
@@ -248,13 +237,14 @@ public class Fachada {
 		
 		Conta c1 = cr.localizar(id1);
 		if(c1 == null)
-			throw new Exception("debitar valor: Conta " + id1 + "não associada a Correntista " + cpf);
+			throw new Exception("debitar valor: Conta " + id1 + " não associada a Correntista " + cpf);
 
 		Conta c2 = repositorio.localizarConta(id2);
 		if(c2 == null)
-			throw new Exception("transferir valor: Conta " + id2 + "não encontrada.");
+			throw new Exception("transferir valor: Conta " + id2 + " não encontrada.");
 
 		c1.transferir(valor, c2);
+		repositorio.salvarObjetos();
 	}
 
 }
