@@ -123,9 +123,9 @@ public class Fachada {
 		if(paux != null) 
 			throw new Exception("N�o adicionou Correntista: " + cpf + " j� participa de conta " + id);
 
-		//adicionar o Conta ao Correntista
+		//adicionar o Correntista a Conta 
 		c.adicionar(cr);
-		//adicionar o Correntista ao Conta
+		//adicionar a Conta ao Correntista
 		cr.adicionar(c);
 		//gravar reposit�rio
 		repositorio.salvarObjetos();
@@ -147,14 +147,14 @@ public class Fachada {
 			throw new Exception("Correntista " + cpf + " é titular de " + id + ". Não pode ser removido");
 		}
 
-		//localizar o Conta no Correntista, usando o nome
+		//localizar o Correntista na Conta, usando o nome
 		Correntista paux = c.localizar(cpf);
 		if(paux == null) 
 			throw new Exception("remover Correntista: " + cpf + " não participa de conta " + id);
 
-		//adicionar o Conta ao Correntista
+		//adicionar o Correntista a Conta  
 		c.remover(cr);
-		//adicionar o Correntista ao Conta
+		//adicionar a Conta o Correntista
 		cr.remover(c);
 		//gravar reposit�rio
 		repositorio.salvarObjetos();
@@ -180,20 +180,24 @@ public class Fachada {
 		c.getCorrentistas().clear();
 		c.setTitular(null);
 		
-		//remover Correntista do reposit�rio
+		//remover Conta do reposit�rio
 		repositorio.remover(c);
 		//gravar reposit�rio
 		repositorio.salvarObjetos();
 	}
 
 	public static void creditarValor(int id, String cpf, String senha, double valor) throws Exception{
-		//localizar Correntista no repositorio, usando id 
+		//localizar Correntista no repositorio, usando cpf 
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
 			throw new Exception("creditar valor: Correntista " + cpf + " inexistente");
 		
 		if(!cr.getSenha().equals(senha))
 			throw new Exception("creditar valor: Senha incorreta");
+
+		if(valor <=0 ){
+			throw new Exception("creditar valor: Valor a ser adicionado precisa ser maior que 0.");
+		}
 		
 		Conta c = cr.localizar(id);
 		if(c == null)
@@ -230,14 +234,18 @@ public class Fachada {
 	public static void tranferirValor(int id1, String cpf, String senha, double valor, int id2) throws Exception{
 		Correntista cr = repositorio.localizarCorrentista(cpf);
 		if(cr == null) 
-			throw new Exception("debitar valor: Correntista " + cpf + " inexistente");
+			throw new Exception("transferir valor: Correntista " + cpf + " inexistente");
 		
 		if(!cr.getSenha().equals(senha))
-			throw new Exception("debitar valor: Senha incorreta");
+			throw new Exception("transferir valor: Senha incorreta");
 		
+		if(valor <= 0){
+			throw new Exception("transferir valor: Valor a ser transferido precisa ser maior que 0.");
+		}
+
 		Conta c1 = cr.localizar(id1);
 		if(c1 == null)
-			throw new Exception("debitar valor: Conta " + id1 + " não associada a Correntista " + cpf);
+			throw new Exception("transferir valor: Conta " + id1 + " não associada a Correntista " + cpf);
 
 		Conta c2 = repositorio.localizarConta(id2);
 		if(c2 == null)
